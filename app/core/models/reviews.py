@@ -1,5 +1,5 @@
-from sqlalchemy import ForeignKey, String, Text, TIMESTAMP
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey, Text, TIMESTAMP
+from sqlalchemy.orm import Mapped, mapped_column
 from typing import Optional
 from app.core.models.base import Base
 

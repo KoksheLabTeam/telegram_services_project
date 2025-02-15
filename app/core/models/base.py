@@ -1,4 +1,4 @@
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column, DeclarativeBase
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 
 
 class Base(DeclarativeBase):

@@ -1,6 +1,5 @@
-from sqlalchemy import ForeignKey, String, Text, TIMESTAMP
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from typing import Optional
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column
 from app.core.models.base import Base
 
 class Offer(Base):

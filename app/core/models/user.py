@@ -1,5 +1,5 @@
-from sqlalchemy import ForeignKey, String, Text, TIMESTAMP
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column
 from typing import Optional
 from app.core.models.base import Base
 
@@ -8,8 +8,9 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     telegram_id: Mapped[int] = mapped_column(unique=True, nullable=False) # ID телеграм
-    username: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)  # Имя в Телеграм
-    name: Mapped[str] = mapped_column(String(255), nullable=False)  # Имя пользователя
+    username: Mapped[str] = mapped_column(String(50), unique=True, nullable=True)  # Имя в Телеграм
+    first_name: Mapped[str] = mapped_column(String(50))  # Имя пользователя
+    last_name: Mapped[str] = mapped_column(String(50))  # Имя пользователя
     is_customer: Mapped[bool] = mapped_column(default=False)  # Флаг заказчика
     is_executor: Mapped[bool] = mapped_column(default=True)  # Флаг исполнителя
     is_admin: Mapped[bool] = mapped_column(default=False)  # Флаг администратора

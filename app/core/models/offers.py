@@ -11,3 +11,4 @@ class Offer(Base):
     proposed_price: Mapped[float] = mapped_column(nullable=False)  # Предложенная цена
     estimated_time: Mapped[str] = mapped_column(String(255), nullable=False)  # Примерное время выполнения
     status: Mapped[str] = mapped_column(default="pending")  # Статус предложения
+

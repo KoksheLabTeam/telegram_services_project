@@ -1,6 +1,6 @@
 from app.core.models.user import User
 from app.core.schemas.user import UserCreate
-from app.core.repos.user import UserRepo, UserCreateExeption
+from app.core.repos.user import UserRepo, UserCreateException
 from fastapi import HTTPException
 
 # API -> Service -> Repo хранить бизнес логику, калькуляцию к примеру (ответы тестов пришли, и внутри сервиса,

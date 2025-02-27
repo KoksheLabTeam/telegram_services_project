@@ -1,0 +1,4 @@
+alembic init app/alembic
+pip install black
+alembic revision --autogenerate -m 'creat_user_table'
+alembic upgrade head

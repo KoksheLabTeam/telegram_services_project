@@ -1,0 +1,5 @@
+Set-ExecutionPolicy Unrestricted -Scope Process   1 раз
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser навсегда
+разрешение powershell
+
+C:\Users\User\PycharmProjects

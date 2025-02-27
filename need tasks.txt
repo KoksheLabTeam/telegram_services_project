@@ -13,3 +13,4 @@ if order.customer_id != current_user.id:
     raise ValueError("Вы не можете удалить чужой заказ")
 Админ может удалять любой заказ → если is_admin=True, то пропустить.
 
+

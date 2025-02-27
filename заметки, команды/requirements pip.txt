@@ -1,0 +1,30 @@
+pip freeze > ./requirements.txt  сохранять список библиотек в файл
+pip uninstall -r ./requirements.txt удалить все библиотеки
+
+uvicorn app.main:a   создает сервер
+uvicorn app.main:app --reload   флажок для пересоздание сервера
+
+pip list (список бибилиотек)
+
+
+python -m venv venv (Только для виртуальной среды)
+venv\Scripts\activate
+pip install fastapi
+pip install uvicorn
+pip install sqlalchemy
+pip install psycopg2-binary  
+
+docker compose up (для запуска докера)
+
+pgdata надо удалять, прежде чем менять название базы данных
+
+git init инициализация
+git add . (all files, but need to one)
+git commit -m 'Комментарий'
+git push пушить
+git pull стянуть
+
+git clone https://fqffqfq      
+git pull
+
+

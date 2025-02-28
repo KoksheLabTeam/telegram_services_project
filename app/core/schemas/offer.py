@@ -1,23 +1,30 @@
 from app.core.schemas.base import BaseSchema
 from typing import Optional
 from datetime import datetime
+from decimal import Decimal
+from enum import Enum
 
-class OfferRead(BaseSchema):
-    id: int
-    customer_id: int  # ID заказчика
-    executor_id: int   # ID исполнителя
-    order_id: int      # ID заказа
-    price: float
-    status: str
-    created_at: datetime
+class OfferStatus(str, Enum):
+    PENDING = "pending"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
 
 class OfferCreate(BaseSchema):
-    customer_id: int
-    executor_id: int
     order_id: int
-    price: float
-    status: str
+    executor_id: int
+    price: Decimal
+    estimated_time: int
 
 class OfferUpdate(BaseSchema):
-    price: Optional[float] = None
-    status: Optional[str] = None
+    price: Optional[Decimal] = None
+    estimated_time: Optional[int] = None
+    status: Optional[OfferStatus] = None
+
+class OfferResponse(BaseSchema):
+    id: int
+    order_id: int
+    executor_id: int
+    price: Decimal
+    estimated_time: int
+    status: OfferStatus
+    created_at: datetime

@@ -1,36 +1,47 @@
-from app.core.models.user import User
-from app.core.schemas.user import UserCreate
-from app.core.repos.user import UserRepo, UserCreateException
 from fastapi import HTTPException
+from app.core.models.user import User
+from app.core.repos.user import UserRepo, UserCreateException
+from app.core.schemas.user import UserCreate, UserResponse
 
-# API -> Service -> Repo хранить бизнес логику, калькуляцию к примеру (ответы тестов пришли, и внутри сервиса,
-# и на сколько ответили правильно и неправильно все тут, и конечный результат тоже будем писать тут
-
-# user depency -> get_user_service -> service,
-# get_curent_user
-# get_admin_user для прав админа
 
 class UserService:
     def __init__(self, repository: UserRepo) -> None:
         self.repository = repository
 
-    def create(self, data: UserCreate) -> User:
+    def create(self, data: UserCreate) -> UserResponse:
         instance = User(
-            username = data.username,
-            password = data.password,
-            first_name = data.first_name,
-            last_name = data.last_name,
-            middle_name = data.middle_name if not data.middle_name else None, # если не пришел, не будет записывать
-            is_active = data.is_active,
-            is_staff= data.is_staff,
-            is_superuser = data.is_superuser,
+            telegram_id=data.telegram_id,
+            name=data.name,
+            username=data.username,
+            is_customer=data.is_customer,
+            is_executor=data.is_executor,
+            is_admin=data.is_admin,
+            city_id=data.city_id,
+            rating=data.rating,
+            completed_orders=data.completed_orders,
         )
 
         try:
             user = self.repository.create(instance)
-            return user
-        except UserCreateExeption as e:
-            raise HTTPException(status_code=500, detail=f"Error while creating user: {e}"
-            )
+            return UserResponse.from_orm(user)
+        except UserCreateException as e:
+            raise HTTPException(status_code=500, detail=f"Error while creating user: {e}")
 
+    def get_by_telegram_id(self, telegram_id: int) -> UserResponse:
+        user = self.repository.get_by_telegram_id(telegram_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        return UserResponse.from_orm(user)
 
+    def update(self, telegram_id: int, update_data: dict) -> UserResponse:
+        try:
+            user = self.repository.update(telegram_id, update_data)
+            return UserResponse.from_orm(user)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error while updating user: {e}")
+
+    def delete(self, telegram_id: int) -> None:
+        try:
+            self.repository.delete(telegram_id)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error while deleting user: {e}")

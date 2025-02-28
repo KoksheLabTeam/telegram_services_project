@@ -2,24 +2,23 @@ from app.core.schemas.base import BaseSchema
 from typing import Optional
 from datetime import datetime
 
-class OrderRead(BaseSchema):
-    id: int
-    customer_id: int
-    title: str
-    description: Optional[str] = None
-    price: float
-    status: str
-    created_at: datetime
-
 class OrderCreate(BaseSchema):
     customer_id: int
-    title: str
-    description: Optional[str] = None
-    price: float
-    status: str
+    executor_id: Optional[int] = None
+    category_id: int
+    description: str
+    status: str  # Например, "pending", "in_progress", "completed"
+    created_at: datetime = datetime.utcnow()
 
 class OrderUpdate(BaseSchema):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    price: Optional[float] = None
-    status: Optional[str] = None
+    executor_id: Optional[int] = None
+    status: Optional[str] = None  # Изменяемый статус
+
+class OrderResponse(BaseSchema):
+    id: int
+    customer_id: int
+    executor_id: Optional[int]
+    category_id: int
+    description: str
+    status: str
+    created_at: datetime

@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
+from app.core.schemas.order import OrderResponse
 from app.core.models.order import Order, OrderStatus
 
 
@@ -26,7 +26,7 @@ class OrderRepo:
             self.session.rollback()
             raise OrderCreateException(str(e))
 
-    def get_by_id(self, order_id: int) -> Order:
+    def get_by_id(self, order_id: int) -> OrderResponse:
         query = select(Order).where(Order.id == order_id)
         try:
             result = self.session.execute(query)

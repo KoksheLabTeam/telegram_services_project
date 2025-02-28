@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.models.base import Base
 from decimal import Decimal
-from sqlalchemy import ForeignKey, Enum, Numeric
+from sqlalchemy import Column, ForeignKey, Integer, String, Numeric, Enum, CheckConstraint
 
 class User(Base):
     """Модель для пользователей."""

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from app.core.models.base import Base
-from sqlalchemy import ForeignKey, CheckConstraint
+from sqlalchemy import Column, ForeignKey, Integer, String, Numeric, Enum, CheckConstraint
 
 class Review(Base):
     """Модель для отзывов."""

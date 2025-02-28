@@ -1,32 +1,34 @@
-from app.core.models.category import Category
-from app.core.schemas.category import CategoryCreate, CategoryUpdate, CategoryResponse
-from app.core.repos.category import CategoryRepo, CategoryCreateException, CategoryNotFoundException
+# app/core/services/category.py
 from fastapi import HTTPException
-
+from app.core.models.category import Category
+from app.core.schemas.category import CategoryCreate, CategoryUpdate, CategoryRead
+from app.core.repos.category import CategoryRepo, CategoryCreateException, CategoryNotFoundException
 
 class CategoryService:
     def __init__(self, repository: CategoryRepo) -> None:
         self.repository = repository
 
-    def create(self, data: CategoryCreate) -> CategoryResponse:
+    def create(self, data: CategoryCreate) -> CategoryRead:
         instance = Category(name=data.name)
-
         try:
             category = self.repository.create(instance)
-            return CategoryResponse.from_orm(category)
+            return CategoryRead.from_orm(category)
         except CategoryCreateException as e:
             raise HTTPException(status_code=500, detail=f"Error while creating category: {e}")
 
-    def get_by_id(self, category_id: int) -> CategoryResponse:
-        category = self.repository.get_by_id(category_id)
-        if not category:
-            raise HTTPException(status_code=404, detail="Category not found")
-        return CategoryResponse.from_orm(category)
-
-    def update(self, category_id: int, update_data: CategoryUpdate) -> CategoryResponse:
+    def get_by_id(self, category_id: int) -> CategoryRead:
         try:
-            category = self.repository.update(category_id, update_data)
-            return CategoryResponse.from_orm(category)
+            category = self.repository.get_by_id(category_id)
+            if not category:
+                raise HTTPException(status_code=404, detail="Category not found")
+            return CategoryRead.from_orm(category)
+        except CategoryNotFoundException:
+            raise HTTPException(status_code=404, detail="Category not found")
+
+    def update(self, category_id: int, update_data: CategoryUpdate) -> CategoryRead:
+        try:
+            category = self.repository.update(category_id, update_data.dict(exclude_unset=True))
+            return CategoryRead.from_orm(category)
         except CategoryNotFoundException:
             raise HTTPException(status_code=404, detail="Category not found")
         except Exception as e:
@@ -39,3 +41,9 @@ class CategoryService:
             raise HTTPException(status_code=404, detail="Category not found")
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error while deleting category: {e}")
+
+    def select(self, **filters):
+        categories = self.repository.select(**filters)
+        if not categories:
+            raise HTTPException(status_code=404, detail="No categories found")
+        return [CategoryRead.from_orm(category) for category in categories]

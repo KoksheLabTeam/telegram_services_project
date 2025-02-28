@@ -1,14 +1,13 @@
-from app.core.models.order import Order
-from app.core.schemas.order import OrderCreate, OrderUpdate
-from app.core.repos.order import OrderRepo, OrderCreateException, OrderNotFoundException, OrderResponse
 from fastapi import HTTPException
-
+from app.core.models.order import Order
+from app.core.schemas.order import OrderCreate, OrderUpdate, OrderRead
+from app.core.repos.order import OrderRepo, OrderCreateException, OrderNotFoundException
 
 class OrderService:
     def __init__(self, repository: OrderRepo) -> None:
         self.repository = repository
 
-    def create(self, data: OrderCreate) -> OrderResponse:
+    def create(self, data: OrderCreate) -> OrderRead:
         instance = Order(
             customer_id=data.customer_id,
             executor_id=data.executor_id,
@@ -20,20 +19,23 @@ class OrderService:
         )
         try:
             order = self.repository.create(instance)
-            return OrderResponse.model_validate(order)
+            return OrderRead.from_orm(order)
         except OrderCreateException as e:
             raise HTTPException(status_code=500, detail=f"Error while creating order: {e}")
 
-    def get_by_id(self, order_id: int) -> OrderResponse:
-        order = self.repository.get_by_id(order_id)
-        if not order:
-            raise HTTPException(status_code=404, detail="Order not found")
-        return OrderResponse.model_validate(order)
-
-
-    def update(self, order_id: int, update_data: OrderUpdate) -> Order:
+    def get_by_id(self, order_id: int) -> OrderRead:
         try:
-            return self.repository.update(order_id, update_data)
+            order = self.repository.get_by_id(order_id)
+            if not order:
+                raise HTTPException(status_code=404, detail="Order not found")
+            return OrderRead.from_orm(order)
+        except OrderNotFoundException:
+            raise HTTPException(status_code=404, detail="Order not found")
+
+    def update(self, order_id: int, update_data: OrderUpdate) -> OrderRead:
+        try:
+            order = self.repository.update(order_id, update_data.dict(exclude_unset=True))
+            return OrderRead.from_orm(order)
         except OrderNotFoundException:
             raise HTTPException(status_code=404, detail="Order not found")
         except Exception as e:
@@ -46,3 +48,9 @@ class OrderService:
             raise HTTPException(status_code=404, detail="Order not found")
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error while deleting order: {e}")
+
+    def select(self, **filters):
+        orders = self.repository.select(**filters)
+        if not orders:
+            raise HTTPException(status_code=404, detail="No orders found")
+        return [OrderRead.from_orm(order) for order in orders]

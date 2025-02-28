@@ -1,11 +1,12 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.models.base import Base
 
 class City(Base):
+    """Модель для городов."""
     __tablename__ = "cities"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String, unique=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(unique=True, nullable=False)
 
-    users = relationship("User", back_populates="city")
+    # Связь с пользователями
+    users: Mapped[list["User"]] = relationship("User", back_populates="city")

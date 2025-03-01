@@ -17,5 +17,5 @@ class Review(Base):
 
     # Связи
     order: Mapped["Order"] = relationship("Order")
-    author: Mapped["User"] = relationship("User", foreign_keys="Review.author_id", back_populates="reviews_written")
-    target: Mapped["User"] = relationship("User", foreign_keys="Review.target_id", back_populates="reviews_received")
+    # author: Mapped["User"] = relationship( back_populates="reviews_written", lazy='selectin')
+    # target: Mapped["User"] = relationship( back_populates="reviews_received", lazy='selectin')

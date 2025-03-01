@@ -38,9 +38,9 @@ class UserService:
     # app/core/services/user.py
     def update(self, telegram_id: int, update_data: UserUpdate) -> UserRead:
         try:
-            update_dict = update_data.dict(exclude_unset=True, exclude={"categories"})
+            update_dict = update_data.model_dump(exclude_unset=True, exclude={"categories"})
             user = self.repository.update(telegram_id, update_dict)
-            if "categories" in update_data.dict(exclude_unset=True):
+            if "categories" in update_data.model_dump(exclude_unset=True):
                 user.categories = [self.repository.session.get(Category, cat_id) for cat_id in update_data.categories]
                 self.repository.session.commit()
             return UserRead.from_orm(user)

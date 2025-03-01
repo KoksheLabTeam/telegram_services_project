@@ -3,6 +3,8 @@ from app.core.models.base import Base
 from decimal import Decimal
 from sqlalchemy import Column, ForeignKey, Integer, String, Numeric, Enum, CheckConstraint
 
+from app.core.models.user_categories import user_categories
+
 class User(Base):
     """Модель для пользователей."""
     __tablename__ = "users"
@@ -19,20 +21,20 @@ class User(Base):
     completed_orders: Mapped[int] = mapped_column(default=0)
 
     # Связи
-    city: Mapped["City"] = relationship("City", back_populates="users")
+    # city: Mapped["City"] = relationship("City", back_populates="users")
     categories: Mapped[list["Category"]] = relationship(
-        "Category", secondary="user_categories", back_populates="users"
+        "Category", secondary=user_categories, back_populates="users"
     )
-    orders_created: Mapped[list["Order"]] = relationship(
-        "Order", foreign_keys="Order.customer_id", back_populates="customer"
-    )
-    orders_executed: Mapped[list["Order"]] = relationship(
-        "Order", foreign_keys="Order.executor_id", back_populates="executor"
-    )
-    offers: Mapped[list["Offer"]] = relationship("Offer", back_populates="executor", cascade="all, delete")
-    reviews_received: Mapped[list["Review"]] = relationship(
-        "Review", foreign_keys="Review.target_id", back_populates="target", cascade="all, delete"
-    )
-    reviews_written: Mapped[list["Review"]] = relationship(
-        "Review", foreign_keys="Review.author_id", back_populates="author", cascade="all, delete"
-    )
+    # orders_created: Mapped[list["Order"]] = relationship(
+    #     "Order", foreign_keys="Order.customer_id", back_populates="customer"
+    # )
+    # orders_executed: Mapped[list["Order"]] = relationship(
+    #     "Order", foreign_keys="Order.executor_id", back_populates="executor"
+    # )
+    # offers: Mapped[list["Offer"]] = relationship("Offer", back_populates="executor", cascade="all, delete")
+    # reviews_received: Mapped[list["Review"]] = relationship(
+    #     "Review", foreign_keys="Review.target_id", back_populates="target", cascade="all, delete"
+    # )
+    # reviews_written: Mapped[list["Review"]] = relationship(
+    #     "Review", foreign_keys="Review.author_id", back_populates="author", cascade="all, delete"
+    # )

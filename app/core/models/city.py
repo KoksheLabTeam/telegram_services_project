@@ -9,4 +9,4 @@ class City(Base):
     name: Mapped[str] = mapped_column(unique=True, nullable=False)
 
     # Связь с пользователями
-    users: Mapped[list["User"]] = relationship("User", back_populates="city")
+    # users: Mapped[list["User"]] = relationship(back_populates="city", lazy="selectin")

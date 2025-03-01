@@ -27,9 +27,9 @@ class Order(Base):
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
 
     # Связи
-    customer: Mapped["User"] = relationship("User", foreign_keys="Order.customer_id", back_populates="orders_created")
-    executor: Mapped["User"] = relationship("User", foreign_keys="Order.executor_id", back_populates="orders_executed")
-    city: Mapped["City"] = relationship("City")
+    # customer: Mapped["User"] = relationship("User", foreign_keys="Order.customer_id", back_populates="orders_created")
+    # executor: Mapped["User"] = relationship("User", foreign_keys="Order.executor_id", back_populates="orders_executed")
+    # city: Mapped["City"] = relationship("City")
     category: Mapped["Category"] = relationship("Category")
-    offers: Mapped[list["Offer"]] = relationship("Offer", back_populates="order", cascade="all, delete")
-    reviews: Mapped[list["Review"]] = relationship("Review", cascade="all, delete")
+    # offers: Mapped[list["Offer"]] = relationship("Offer", back_populates="order", cascade="all, delete")
+    # reviews: Mapped[list["Review"]] = relationship("Review", cascade="all, delete")

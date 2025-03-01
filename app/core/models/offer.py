@@ -23,6 +23,6 @@ class Offer(Base):
     status: Mapped[OfferStatus] = mapped_column(Enum(OfferStatus), default=OfferStatus.PENDING, nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
 
-    # Связи
-    order: Mapped["Order"] = relationship("Order", back_populates="offers")
-    executor: Mapped["User"] = relationship("User", back_populates="offers")
+    # # Связи
+    # order: Mapped["Order"] = relationship("Order", back_populates="offers")
+    # executor: Mapped["User"] = relationship("User", back_populates="offers")

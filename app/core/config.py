@@ -5,12 +5,11 @@ class Settings(BaseSettings):
     DB_ECHO: bool = False
 
     model_config = SettingsConfigDict(
-        env_file="app/core/.env",  # Укажите правильный путь к .env файлу
+        env_file="app/core/.env",
         env_file_encoding="utf-8",
         extra="ignore"
     )
 
-# Создаем экземпляр настроек
 settings = Settings()
 
 if not settings.DB_URL:

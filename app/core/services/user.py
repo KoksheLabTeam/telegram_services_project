@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from app.core.models.user import User
 from app.core.schemas.user import UserCreate, UserUpdate, UserRead
 from app.core.repos.user import UserRepo, UserCreateException, UserNotFoundException
+from app.core.models.category import Category
 
 class UserService:
     def __init__(self, repository: UserRepo) -> None:
@@ -34,9 +35,14 @@ class UserService:
         except UserNotFoundException:
             raise HTTPException(status_code=404, detail="User not found")
 
+    # app/core/services/user.py
     def update(self, telegram_id: int, update_data: UserUpdate) -> UserRead:
         try:
-            user = self.repository.update(telegram_id, update_data.dict(exclude_unset=True))
+            update_dict = update_data.dict(exclude_unset=True, exclude={"categories"})
+            user = self.repository.update(telegram_id, update_dict)
+            if "categories" in update_data.dict(exclude_unset=True):
+                user.categories = [self.repository.session.get(Category, cat_id) for cat_id in update_data.categories]
+                self.repository.session.commit()
             return UserRead.from_orm(user)
         except UserNotFoundException:
             raise HTTPException(status_code=404, detail="User not found")

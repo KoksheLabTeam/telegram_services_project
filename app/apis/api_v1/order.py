@@ -1,32 +1,42 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from app.core.schemas.order import OrderCreate, OrderUpdate, OrderResponse
+from app.core.schemas.order import OrderCreate, OrderUpdate, OrderRead
 from app.core.services.order import OrderService
 from app.core.repos.order import OrderRepo
 from app.core.database.helper import get_session
 
-router = APIRouter()
+router = APIRouter(prefix="/orders", tags=["orders"])
 
-@router.post("/orders/", response_model=OrderResponse)
+def parse_filters(customer_id: int = Query(None), status: str = Query(None)) -> dict:
+    filters = {}
+    if customer_id:
+        filters["customer_id"] = customer_id
+    if status:
+        filters["status"] = status
+    return filters
+
+@router.post("/", response_model=OrderRead)
 def create_order(order: OrderCreate, db: Session = Depends(get_session)):
     order_service = OrderService(OrderRepo(db))
     return order_service.create(order)
 
-@router.get("/orders/{order_id}", response_model=OrderResponse)
+@router.get("/{order_id}", response_model=OrderRead)
 def get_order(order_id: int, db: Session = Depends(get_session)):
     order_service = OrderService(OrderRepo(db))
-    order = order_service.get_by_id(order_id)
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
-    return order
+    return order_service.get_by_id(order_id)
 
-@router.put("/orders/{order_id}", response_model=OrderResponse)
+@router.put("/{order_id}", response_model=OrderRead)
 def update_order(order_id: int, order: OrderUpdate, db: Session = Depends(get_session)):
     order_service = OrderService(OrderRepo(db))
     return order_service.update(order_id, order)
 
-@router.delete("/orders/{order_id}")
+@router.delete("/{order_id}")
 def delete_order(order_id: int, db: Session = Depends(get_session)):
     order_service = OrderService(OrderRepo(db))
     order_service.delete(order_id)
     return {"detail": "Order deleted successfully"}
+
+@router.get("/select/", response_model=list[OrderRead])
+def select_orders(filters: dict = Depends(parse_filters), db: Session = Depends(get_session)):
+    order_service = OrderService(OrderRepo(db))
+    return order_service.select(**filters)

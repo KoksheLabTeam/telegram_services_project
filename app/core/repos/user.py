@@ -30,10 +30,19 @@ class UserRepo:
             raise UserNotFoundException(f"User with id '{user_id}' not found")
         return user
 
-    def update(self, user_id: int, update_data: dict) -> User:
+    def get_by_telegram_id(self, telegram_id: int) -> User:
+        query = select(User).where(User.telegram_id == telegram_id)
+        result = self.session.execute(query)
+        user = result.scalar_one_or_none()
+        if not user:
+            raise UserNotFoundException(f"User with telegram_id '{telegram_id}' not found")
+        return user
+
+    def update(self, telegram_id: int, update_data: dict) -> User:
+        user = self.get_by_telegram_id(telegram_id)
         query = (
             update(User)
-            .where(User.id == user_id)
+            .where(User.id == user.id)
             .values(**update_data)
             .returning(User)
         )
@@ -41,8 +50,9 @@ class UserRepo:
         self.session.commit()
         return result.scalar_one()
 
-    def delete(self, user_id: int) -> None:
-        query = delete(User).where(User.id == user_id)
+    def delete(self, telegram_id: int) -> None:
+        user = self.get_by_telegram_id(telegram_id)
+        query = delete(User).where(User.id == user.id)
         self.session.execute(query)
         self.session.commit()
 

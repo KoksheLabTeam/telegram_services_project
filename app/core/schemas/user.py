@@ -1,5 +1,5 @@
 from app.core.schemas.base import BaseSchema
-from typing import Optional
+from typing import Optional, List
 
 class UserRead(BaseSchema):
     """Схема для чтения пользователя."""
@@ -27,7 +27,6 @@ class UserCreate(BaseSchema):
     completed_orders: int = 0
 
 class UserUpdate(BaseSchema):
-    """Схема для обновления пользователя."""
     name: Optional[str] = None
     username: Optional[str] = None
     is_customer: Optional[bool] = None
@@ -36,3 +35,4 @@ class UserUpdate(BaseSchema):
     city_id: Optional[int] = None
     rating: Optional[float] = None
     completed_orders: Optional[int] = None
+    categories: Optional[List[int]] = None  # ID категорий

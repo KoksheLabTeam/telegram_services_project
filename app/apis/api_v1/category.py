@@ -4,6 +4,8 @@ from app.core.schemas.category import CategoryCreate, CategoryUpdate, CategoryRe
 from app.core.services.category import CategoryService
 from app.core.repos.category import CategoryRepo
 from app.core.database.helper import get_session
+from app.apis.api_v1.user import require_admin, get_current_user  # Импорт из user.py
+from app.core.models.user import User
 
 router = APIRouter(prefix="/categories", tags=["categories"])
 
@@ -14,7 +16,11 @@ def parse_filters(name: str = Query(None)) -> dict:
     return filters
 
 @router.post("/", response_model=CategoryRead)
-def create_category(category: CategoryCreate, db: Session = Depends(get_session)):
+def create_category(
+    category: CategoryCreate,
+    db: Session = Depends(get_session),
+    admin: User = Depends(require_admin)
+):
     service = CategoryService(CategoryRepo(db))
     return service.create(category)
 
@@ -24,12 +30,21 @@ def get_category(category_id: int, db: Session = Depends(get_session)):
     return service.get_by_id(category_id)
 
 @router.put("/{category_id}", response_model=CategoryRead)
-def update_category(category_id: int, category: CategoryUpdate, db: Session = Depends(get_session)):
+def update_category(
+    category_id: int,
+    category: CategoryUpdate,
+    db: Session = Depends(get_session),
+    admin: User = Depends(require_admin)
+):
     service = CategoryService(CategoryRepo(db))
     return service.update(category_id, category)
 
 @router.delete("/{category_id}")
-def delete_category(category_id: int, db: Session = Depends(get_session)):
+def delete_category(
+    category_id: int,
+    db: Session = Depends(get_session),
+    admin: User = Depends(require_admin)
+):
     service = CategoryService(CategoryRepo(db))
     service.delete(category_id)
     return {"detail": "Category deleted successfully"}

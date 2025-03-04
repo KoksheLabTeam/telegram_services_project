@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.models.base import Base
 from decimal import Decimal
-from sqlalchemy import Column, ForeignKey, Integer, String, Numeric, Enum, CheckConstraint
+from sqlalchemy import Column, ForeignKey, Integer, String, Numeric
 
 class User(Base):
     """Модель для пользователей."""
@@ -23,6 +23,7 @@ class User(Base):
     categories: Mapped[list["Category"]] = relationship(
         "Category", secondary="user_categories", back_populates="users"
     )
+    # Остальные связи остаются без изменений
     orders_created: Mapped[list["Order"]] = relationship(
         "Order", foreign_keys="Order.customer_id", back_populates="customer"
     )
